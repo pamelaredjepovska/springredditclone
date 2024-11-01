@@ -3,6 +3,9 @@ package com.example.springredditclone.service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 // Fill email Thymeleaf template with specific data
 public class MailContentBuilder {
     private final TemplateEngine templateEngine = new TemplateEngine();

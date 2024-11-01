@@ -14,14 +14,16 @@ import com.example.springredditclone.repository.UserRepository;
 import com.example.springredditclone.repository.VerificationTokenRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class AuthService {
-    private final PasswordEncoder passwordEncoder = null;
-    private final UserRepository userRepository = null;
-    private final VerificationTokenRepository verificationTokenRepository = null;
-    private final MailService mailService = null;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final MailService mailService;
     
     public void signup(RegisterRequest registerRequest) {
         // Create new User object with the specified information
