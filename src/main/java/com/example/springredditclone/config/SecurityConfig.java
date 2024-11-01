@@ -10,12 +10,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        // Allow all requests that match "api/auth/*" with no authentication
-        // All other requests require authentication
         return httpSecurity
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for testing or stateless APIs
                 .authorizeHttpRequests(
                     (authorize) -> authorize
-                    .requestMatchers("api/auth/**")
+                    .requestMatchers("/api/auth/**") // Include leading slash
                     .permitAll()
                     .anyRequest()
                     .authenticated()
