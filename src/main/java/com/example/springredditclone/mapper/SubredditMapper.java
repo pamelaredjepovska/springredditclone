@@ -25,5 +25,7 @@ public interface SubredditMapper {
     // Convert subreddit DTO back to subreddit entity
     @InheritInverseConfiguration
     @Mapping(target = "posts", ignore = true)
+    @Mapping(target = "createdDate", ignore = true)
+    @Mapping(target = "user", ignore = true)
     Subreddit mapDtoToSubreddit(SubredditDto subredditDto);
 }
