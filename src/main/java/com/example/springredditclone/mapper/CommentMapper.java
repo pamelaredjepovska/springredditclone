@@ -8,16 +8,20 @@ import com.example.springredditclone.model.Comment;
 import com.example.springredditclone.model.Post;
 import com.example.springredditclone.model.User;
 
-@Mapper(componentModel = "spring")
+// MapStruct interface for mapping between Comment and CommentDto objects
+@Mapper(componentModel = "spring") 
 public interface CommentMapper {
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "text", source = "commentsDto.text")
+
+    // Maps a CommentDto object to a Comment object
+    @Mapping(target = "id", ignore = true) // The Comment's id is ignored as it will be auto-generated
+    @Mapping(target = "text", source = "commentsDto.text") 
     @Mapping(target = "createdDate", expression = "java(java.time.Instant.now())")
-    @Mapping(target = "post", source = "post")
-    @Mapping(target = "user", source = "user")
+    @Mapping(target = "post", source = "post") 
+    @Mapping(target = "user", source = "user") 
     Comment map(CommentDto commentsDto, Post post, User user);
 
-    @Mapping(target = "postId", expression = "java(comment.getPost().getPostId())")
+    // Maps a Comment object to a CommentDto object
+    @Mapping(target = "postId", expression = "java(comment.getPost().getPostId())") 
     @Mapping(target = "userName", expression = "java(comment.getUser().getUsername())")
     CommentDto mapToDto(Comment comment);
 }

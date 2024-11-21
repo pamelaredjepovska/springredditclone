@@ -122,6 +122,7 @@ public class AuthService {
                 .build();
     }
 
+    // Get current logged in user
     @Transactional(readOnly = true)
     public User getCurrentUser() {
         Jwt principal = (Jwt) SecurityContextHolder.

@@ -16,27 +16,38 @@ import com.example.springredditclone.service.CommentService;
 
 import lombok.AllArgsConstructor;
 
+// REST Controller for managing comment-related endpoints
 @RestController
-@RequestMapping("api/comment")
-@AllArgsConstructor
+@RequestMapping("api/comment") 
+@AllArgsConstructor 
 public class CommentController {
+
+    // Dependency on CommentService for handling business logic
     private final CommentService commentService;
 
-    @PostMapping
+    // Endpoint for creating a new comment
+    @PostMapping 
     public ResponseEntity<Void> createComment(@RequestBody CommentDto commentsDto) {
+        // Delegates the save operation to the service layer
         commentService.save(commentsDto);
+
+        // Returns HTTP 201 (Created) response with no body
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    // Endpoint for fetching all comments associated with a specific post
     @GetMapping(params = "postId")
     public ResponseEntity<List<CommentDto>> getAllCommentsForPost(@RequestParam Long postId) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(commentService.getAllCommentsForPost(postId));
+        // Calls the service layer to fetch the comments for the given post ID
+        return ResponseEntity.status(HttpStatus.OK) // Returns HTTP 200 (OK)
+                .body(commentService.getAllCommentsForPost(postId)); // Attaches the comments in the response body
     }
 
+    // Endpoint for fetching all comments made by a specific user
     @GetMapping(params = "userName")
-    public ResponseEntity<List<CommentDto>> getAllCommentsForUser(@RequestParam String userName){
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(commentService.getAllCommentsForUser(userName));
+    public ResponseEntity<List<CommentDto>> getAllCommentsForUser(@RequestParam String userName) {
+        // Calls the service layer to fetch the comments made by the given user
+        return ResponseEntity.status(HttpStatus.OK) // Returns HTTP 200 (OK)
+                .body(commentService.getAllCommentsForUser(userName)); // Attaches the comments in the response body
     }
 }
