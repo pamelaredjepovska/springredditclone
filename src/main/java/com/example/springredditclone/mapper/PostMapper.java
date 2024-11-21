@@ -9,8 +9,11 @@ import com.example.springredditclone.model.Post;
 import com.example.springredditclone.model.Subreddit;
 import com.example.springredditclone.model.User;
 
+// MapStruct interface for mapping between Post and PostDto objects
 @Mapper(componentModel = "spring")
 public abstract class PostMapper {
+
+    // Maps a PostDto object to a Post object
     @Mapping(target = "id", ignore = true) // Avoid conflicts with multiple 'id' sources
     @Mapping(target = "title", ignore = true)
     @Mapping(target = "createdDate", expression = "java(java.time.Instant.now())")
@@ -20,6 +23,7 @@ public abstract class PostMapper {
     @Mapping(target = "user", source = "user")
     public abstract Post map(PostRequest postRequest, Subreddit subreddit, User user);
 
+    // Maps a Post object to a PostDto object
     @Mapping(target = "title", ignore = true)
     @Mapping(target = "id", source = "post.id")
     @Mapping(target = "subredditName", source = "subreddit.name")
