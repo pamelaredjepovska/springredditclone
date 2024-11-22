@@ -2,6 +2,7 @@ package com.example.springredditclone.service;
 
 import java.util.List;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +13,10 @@ import com.example.springredditclone.exceptions.SubredditNotFoundException;
 import com.example.springredditclone.mapper.PostMapper;
 import com.example.springredditclone.model.Post;
 import com.example.springredditclone.model.Subreddit;
+import com.example.springredditclone.model.User;
 import com.example.springredditclone.repository.PostRepository;
 import com.example.springredditclone.repository.SubredditRepository;
-// import com.example.springredditclone.repository.UserRepository;
+import com.example.springredditclone.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +32,7 @@ public class PostService {
     // Dependencies required for post operations
     private final PostRepository postRepository;
     private final SubredditRepository subredditRepository;
-    // private final UserRepository userRepository; // Not currently used
+    private final UserRepository userRepository; // Not currently used
     private final AuthService authService;
     private final PostMapper postMapper;
 
@@ -60,6 +62,34 @@ public class PostService {
     public List<PostResponse> getAllPosts() {
         // Fetch all posts, map them to PostResponse DTOs, and collect them into a list
         return postRepository.findAll()
+                .stream()
+                .map(postMapper::mapToDto)
+                .collect(toList());
+    }
+
+    // Retrieves all posts belonging to a specific subreddit
+    @Transactional(readOnly = true)
+    public List<PostResponse> getPostsBySubreddit(Long subredditId) {
+        // Find the subreddit from the repository or throw an exception if not found
+        Subreddit subreddit = subredditRepository.findById(subredditId)
+                .orElseThrow(() -> new SubredditNotFoundException(subredditId.toString()));
+
+        // Fetch all posts from the repository
+        List<Post> posts = postRepository.findAllBySubreddit(subreddit);
+
+        // Collect the posts as a list and return it
+        return posts.stream().map(postMapper::mapToDto).collect(toList());
+    }
+
+    // Retrieves all posts made by a specific user
+    @Transactional(readOnly = true)
+    public List<PostResponse> getPostsByUsername(String username) {
+        // Find the user from the repository or throw an exception if not found
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
+
+        // Collect the posts as a list and return it
+        return postRepository.findByUser(user)
                 .stream()
                 .map(postMapper::mapToDto)
                 .collect(toList());

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.springredditclone.dto.PostRequest;
@@ -46,20 +46,24 @@ public class PostController {
         return status(HttpStatus.OK).body(postService.getAllPosts());
     }
 
-    // Endpoint for fetchin a post associated with a specific ID
+    // Endpoint for fetching a post associated with a specific ID
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
         // Calls the service layer to fetch the post
         return status(HttpStatus.OK).body(postService.getPost(id));
     }
 
-    // @GetMapping(params = "subredditId")
-    // public ResponseEntity<List<PostResponse>> getPostsBySubreddit(@RequestParam Long subredditId) {
-    //     return status(HttpStatus.OK).body(postService.getPostsBySubreddit(subredditId));
-    // }
+    // Endpoint for fetching all posts associated with a subreddit
+    @GetMapping(params = "subredditId")
+    public ResponseEntity<List<PostResponse>> getPostsBySubreddit(@RequestParam Long subredditId) {
+        // Calls the service layer to fetch the post
+        return status(HttpStatus.OK).body(postService.getPostsBySubreddit(subredditId));
+    }
 
-    // @GetMapping(params = "username")
-    // public ResponseEntity<List<PostResponse>> getPostsByUsername(@RequestParam String username) {
-    //     return status(HttpStatus.OK).body(postService.getPostsByUsername(username));
-    // }
+    // Endpoint for fetching all posts associated with a user
+    @GetMapping(params = "username")
+    public ResponseEntity<List<PostResponse>> getPostsByUsername(@RequestParam String username) {
+        // Calls the service layer to fetch the post
+        return status(HttpStatus.OK).body(postService.getPostsByUsername(username));
+    }
 }
