@@ -9,13 +9,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.springredditclone.dto.AuthenticationResponse;
 import com.example.springredditclone.dto.LoginRequest;
+import com.example.springredditclone.dto.RefreshTokenRequest;
 import com.example.springredditclone.dto.RegisterRequest;
 import com.example.springredditclone.service.AuthService;
+import com.example.springredditclone.service.RefreshTokenService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import static org.springframework.http.HttpStatus.OK;
 
 // REST Controller handling user authentication
 @RestController
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class AuthController {
 
     private final AuthService authService;
+    private final RefreshTokenService refreshTokenService;
 
     // Register a new user
     @PostMapping("/signup")
@@ -47,5 +52,17 @@ public class AuthController {
         return authService.login(loginRequest);
     }
     
-    
+    // Refresh the authentication token for the user
+    @PostMapping("/refresh/token")
+    public AuthenticationResponse refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+        return authService.refreshToken(refreshTokenRequest);
+    }
+
+    // Log out the user and delete their refresh token
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+        refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
+
+        return ResponseEntity.status(OK).body("Refresh Token Deleted.");
+    }    
 }

@@ -36,7 +36,7 @@ public class JwtProvider {
     }
 
     // Build the JWT using claims
-    private String generateTokenWithUsername(String username) {
+    public String generateTokenWithUsername(String username) {
         // Build the token's payload containing username, issue time, expiration time and role
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")

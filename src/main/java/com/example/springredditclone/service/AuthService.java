@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.springredditclone.dto.AuthenticationResponse;
 import com.example.springredditclone.dto.LoginRequest;
+import com.example.springredditclone.dto.RefreshTokenRequest;
 import com.example.springredditclone.dto.RegisterRequest;
 import com.example.springredditclone.exceptions.SpringRedditException;
 import com.example.springredditclone.model.NotificationEmail;
@@ -40,6 +41,7 @@ public class AuthService {
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
     
     // Register the user
     public void signup(RegisterRequest registerRequest) {
@@ -117,7 +119,7 @@ public class AuthService {
         // Return an object with the token, expiration time and username
         return AuthenticationResponse.builder()
                 .authenticationToken(token)
-                // .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
                 .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
                 .username(loginRequest.getUsername())
                 .build();
@@ -137,5 +139,22 @@ public class AuthService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         
         return !(authentication instanceof AnonymousAuthenticationToken) && authentication.isAuthenticated();
+    }
+
+    // Refresh the authentication token for the user
+    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        // Validate the provided refresh token
+        refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
+
+        // Generate a new JWT token using the username from the request
+        String token = jwtProvider.generateTokenWithUsername(refreshTokenRequest.getUsername());
+
+        // Return an updated authentication response with the new token and expiration details
+        return AuthenticationResponse.builder()
+                .authenticationToken(token)
+                .refreshToken(refreshTokenRequest.getRefreshToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .username(refreshTokenRequest.getUsername())
+                .build();
     }
 }
