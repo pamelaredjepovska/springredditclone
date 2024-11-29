@@ -1,10 +1,12 @@
 package com.example.springredditclone.service;
 
+import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import lombok.AllArgsConstructor;
 
+@Service
 @AllArgsConstructor
 // Fill email Thymeleaf template with specific data
 public class MailContentBuilder {
